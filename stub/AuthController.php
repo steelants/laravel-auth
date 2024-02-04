@@ -59,4 +59,14 @@ class AuthController
         Auth::logout();
         return redirect()->route('login');
     }
+
+    public function reset()
+    {
+        return view('auth.reset');
+    }
+
+    public function resetPost(Request $request)
+    {
+        return view('auth.reset');
+    }
 }
