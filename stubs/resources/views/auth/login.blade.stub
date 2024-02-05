@@ -16,12 +16,12 @@
             <strong>{{ $message }}</strong><br>
         </span>
     @enderror
-    @if (Route::has('reset'))
-        <a href="{{ route('reset') }}">
+
+    @if (Route::has('password.request'))
+        <a href="{{ route('password.request') }}">
             {{ __('Password Reset') }} ?
         </a>
     @endif
-
 
     <input type="submit" value="{{ __('Login') }}">
         @if (Route::has('registration'))

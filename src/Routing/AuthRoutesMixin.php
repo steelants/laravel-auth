@@ -25,10 +25,10 @@ class AuthRoutesMixin
                 }
 
                 if ($options['reset'] ?? true) {
-                    $this->get('reset', 'AuthController@reset')->name('reset');
-                    $this->post('reset', 'AuthController@resetPost')->name('reset.submit');
+                    $this->get('password/reset', 'AuthController@reset')->name('password');
+                    $this->post('password/email', 'AuthController@resetPost')->name('password.email');
                     $this->get('password/reset/{token}', 'AuthController@resetPost')->name('password.reset');
-                    $this->post('password/reset/', 'AuthController@resetPost')->name('password.reset.submit');
+                    $this->post('password/reset/', 'AuthController@resetPost')->name('password.update');
                 }
             });
         };
