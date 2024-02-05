@@ -1,0 +1,30 @@
+{
+    "name": "steelants/laravel-auth",
+    "description": "Laravel Auth",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "SteelAnts",
+            "email": "info@steelants.cz"
+        }
+    ],
+    "require": {
+        "laravel/framework": "^10.0"
+    },
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "SteelAnts\\LaravelAuth\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SteelAnts\\LaravelAuth\\AuthServiceProvider"
+            ]
+        }
+    }
+}

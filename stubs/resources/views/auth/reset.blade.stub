@@ -1,0 +1,17 @@
+<form method="POST"action="{{ route('reset.submit') }}">
+    @csrf
+    
+    @if(!isset($token))
+        <label for="email">{{ __('Email') }}:</label><br>
+        <input type="text" id="email" name="email" value="John"><br>
+        @error('email')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong><br>
+            </span>
+        @enderror
+    @else
+        @dump($token)
+    @endif
+    
+    <input type="submit" value="{{ __('Send Password Reset Link') }}">
+</form>
