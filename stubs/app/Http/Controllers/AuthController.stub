@@ -36,7 +36,7 @@ class AuthController
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return back()->with('error', 'Sesprávné jméno nebo heslo');
+        return back()->with('success', 'Successfully registered');
     }
 
     public function login()
