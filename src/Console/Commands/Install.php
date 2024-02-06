@@ -1,21 +1,23 @@
 <?php
 
-namespace SteelAnts\LaravelBoilerplate\Console\Commands;
+namespace SteelAnts\LaravelAuth\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class InstallCommand extends Command
+class Install extends Command
 {
     protected $signature = 'auth:install
                             {--force : Overwrite existing}';
 
-    protected $description = 'Install Authentication';
+    protected $description = 'Install Authentication scaffolding';
 
     public function handle(): void
     {
         $this->components->info('Installing Laravel-Auth Scaffolding');
         self::exportStubs('app');
+        self::exportStubs('resources');
+
     }
 
     protected function exportStubs($type = "app")

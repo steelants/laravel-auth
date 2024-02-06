@@ -2,7 +2,7 @@
     @csrf
 
     <label for="email">{{ __('Email') }}:</label><br>
-    <input type="text" id="email" name="email" value="John"><br>
+    <input type="email" id="email" name="email" placeholder="email@post.xx"><br>
     @error('email')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong><br>
@@ -10,17 +10,17 @@
     @enderror
 
     <label for="password">{{ __('Password') }}:</label><br>
-    <input type="text" id="password" name="password" value="Doe"><br>
+    <input type="password" id="password" name="password"><br>
     @error('password')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong><br>
         </span>
     @enderror
 
-    @if (Route::has('password.request'))
-        <a href="{{ route('password.request') }}">
+    @if (Route::has('password'))
+        <a href="{{ route('password') }}">
             {{ __('Password Reset') }} ?
-        </a>
+        </a><br>
     @endif
 
     <input type="submit" value="{{ __('Login') }}">

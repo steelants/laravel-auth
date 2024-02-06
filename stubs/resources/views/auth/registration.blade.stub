@@ -2,7 +2,7 @@
     @csrf
 
     <label for="name">{{ __('Name') }}:</label><br>
-    <input type="text" id="name" name="name" value="John"><br>
+    <input type="text" id="name" name="name" placeholder="JohnDoe"><br>
     @error('name')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong><br>
@@ -10,7 +10,7 @@
     @enderror
 
     <label for="email">{{ __('Email') }}:</label><br>
-    <input type="text" id="email" name="email" value="John"><br>
+    <input type="email" id="email" name="email" placeholder="email@post.xx"><br>
     @error('email')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong><br>
@@ -18,7 +18,7 @@
     @enderror
 
     <label for="password">{{ __('Password') }}:</label><br>
-    <input type="text" id="password" name="password" value="Doe"><br>
+    <input type="password" id="password" name="password"><br>
     @error('password')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong><br>
@@ -26,7 +26,7 @@
     @enderror
 
     <label for="password_confirmation">{{ __('Confirm Password') }}:</label><br>
-    <input type="text" id="password_confirmation" name="password_confirmation" value="Doe"><br>
+    <input type="password" id="password_confirmation" name="password_confirmation"><br>
     @error('password_confirmation')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong><br>

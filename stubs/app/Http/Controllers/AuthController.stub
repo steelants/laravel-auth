@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Password as PasswordFacade;
+use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\DB;
 
 class AuthController
 {
@@ -75,15 +78,52 @@ class AuthController
         ]);
 
         $response = PasswordFacade::broker()->sendResetLink($request->only('email'));
+
         return $response == PasswordFacade::RESET_LINK_SENT
             ? back()->with('status', trans($response))
-            : back() ->withInput($request->only('email'))->withErrors(['email' => trans($response)]);
+            : back()->withInput($request->only('email'))->withErrors(['email' => trans($response)]);
+    }
 
-//REST
+    public function resetToken(Request $request)
+    {
         $token = $request->route()->parameter('token');
         return view('auth.reset')->with([
             'token' => $token,
             'email' => $request->email
         ]);
+    }
+
+    public function resetPasswordSubmit(Request $request)
+    {
+        $request->validate([
+            'token' => ['required'],
+            'email' => ['required','email'],
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        $response = PasswordFacade::broker()->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) { 
+                $this->resetPassword($user, $password); 
+            }
+        );
+
+        return $response == PasswordFacade::PASSWORD_RESET
+            ? redirect()->route($this->redirect)->with('status', trans($response))
+            : redirect()->back() ->withInput($request->only('email')) ->withErrors(['email' => trans($response)]);
+    }
+
+    protected function resetPassword($user, $password)
+    {
+        $user->password = Hash::make($password);
+        $user->setRememberToken(Str::random(60));
+        $user->save();
+
+        event(new PasswordReset($user));
+
+        //Invalidate rest of reset tokens for same user
+        DB::table('password_reset_tokens')->where('email',$user->email)->delete();
+        
+        Auth::guard()->login($user);
     }
 }
