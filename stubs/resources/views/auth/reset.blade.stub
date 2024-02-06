@@ -30,7 +30,7 @@
         @enderror
     @else
         <label for="email">{{ __('Email') }}:</label><br>
-        <input type="email" id="email" name="email" placeholder="email@post.xx" value="{{ $email }}"><br>
+        <input type="email" id="email" name="email" placeholder="email@post.xx" value="{{ old('email') }}"><br>
         @error('email')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong><br>
