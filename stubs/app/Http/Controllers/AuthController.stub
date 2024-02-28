@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -10,8 +11,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Password as PasswordFacade;
 use Illuminate\Support\Str;
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\DB;
+
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Registered;
+
 
 class AuthController
 {
@@ -35,6 +39,9 @@ class AuthController
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
+
+        event(new Registered($user));
+
 
         return back()->with('success', 'Successfully registered');
     }
