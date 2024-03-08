@@ -9,7 +9,7 @@
 ```bash
 auth:install
 ```
-1) add routes to __web.php__
+2) add routes to __web.php__
 ```php
 Route::auth();
 ```
