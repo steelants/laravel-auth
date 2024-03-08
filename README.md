@@ -2,7 +2,7 @@
 ## Currently WIP
 ### Created by: [SteelAnts s.r.o.](https://www.steelants.cz/)
 
-[![Total Downloads](https://img.shields.io/packagist/dt/steelants/auth.svg?style=flat-square)](https://packagist.org/packages/steelants/auth)
+[![Total Downloads](https://img.shields.io/packagist/dt/steelants/laravel-auth.svg?style=flat-square)](https://packagist.org/packages/steelants/laravel-auth)
 
 ## Install
 1) Artisan Command 
