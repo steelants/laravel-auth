@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use SteelAnts\LaravelAuth\Trait\Authentication;
+use SteelAnts\LaravelAuth\Traits\Authentication;
 
 
 class AuthController
