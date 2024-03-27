@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace SteelAnts\LaravelAuth\Traits;
 
 use App\Models\User;
 use Illuminate\Http\Request;
