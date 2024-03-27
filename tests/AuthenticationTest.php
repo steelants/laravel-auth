@@ -1,6 +1,6 @@
 <?php
 
-namespace Laravel\Ui\Tests\AuthBackend;
+namespace SteelAnts\LaravelAuth\Tests;
 
 use Illuminate\Auth\Events\Attempting;
 use Orchestra\Testbench\Factories\UserFactory;
