@@ -23,7 +23,7 @@ trait Authentication
     {
         $validated = $request->validate([
             'name' => ['required', 'max:255'],
-            'email' => ['required', 'unique:users,email'],
+            'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
