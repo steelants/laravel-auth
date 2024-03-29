@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Password as PasswordFacade;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Events\PasswordReset;
 
 trait Authentication
 {
@@ -103,9 +106,9 @@ trait Authentication
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
-        $status  = PasswordFacade::broker()->reset(
+        $status  = PasswordFacade::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
+            function (User $user, string $password) {
                 $this->resetPassword($user, $password);
             }
         );
@@ -117,8 +120,9 @@ trait Authentication
 
     protected function resetPassword($user, $password)
     {
-        $user->password = Hash::make($password);
-        $user->setRememberToken(Str::random(60));
+        $user->forceFill([
+            'password' => Hash::make($password)
+        ])->setRememberToken(Str::random(60));
         $user->save();
 
         event(new PasswordReset($user));
