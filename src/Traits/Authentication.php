@@ -47,7 +47,7 @@ trait Authentication
             'email' => ['required', 'exists:users,email'],
             'password' => ['required'],
         ]);
-        
+
         if (method_exists($this, 'verifyLoginAttempt')) {
             $this->verifyLoginAttempt($request);
         }
@@ -81,39 +81,38 @@ trait Authentication
             $this->verifyResetAttempt($request);
         }
 
-        $response = PasswordFacade::broker()->sendResetLink($request->only('email'));
-        return $response == PasswordFacade::RESET_LINK_SENT
-            ? back()->with('status', trans($response))
-            : back() ->withInput($request->only('email'))->withErrors(['email' => trans($response)]);
+        $status = PasswordFacade::sendResetLink($request->only('email'));
+        return $status == PasswordFacade::RESET_LINK_SENT
+            ? back()->with('status', trans($status))
+            : back()->withInput($request->only('email'))->withErrors(['email' => trans($status)]);
     }
 
-    public function resetToken(Request $request)
+    public function resetToken(Request $request, string $token)
     {
-        $token = $request->route()->parameter('token');
         return view('auth.reset')->with([
             'token' => $token,
-            'email' => $request->email
+            'email' => $request->input('email')
         ]);
     }
 
-        public function resetPasswordSubmit(Request $request)
+    public function resetPasswordSubmit(Request $request)
     {
         $request->validate([
             'token' => ['required'],
-            'email' => ['required','email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
-        $response = PasswordFacade::broker()->reset(
+        $status  = PasswordFacade::broker()->reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) { 
-                $this->resetPassword($user, $password); 
+            function ($user, $password) {
+                $this->resetPassword($user, $password);
             }
         );
 
-        return $response == PasswordFacade::PASSWORD_RESET
-            ? redirect()->route($this->redirect)->with('status', trans($response))
-            : redirect()->back() ->withInput($request->only('email')) ->withErrors(['email' => trans($response)]);
+        return $status  == PasswordFacade::PASSWORD_RESET
+            ? redirect()->route($this->redirect)->with('status', trans($status ))
+            : redirect()->back()->withInput($request->only('email'))->withErrors(['email' => trans($status )]);
     }
 
     protected function resetPassword($user, $password)
@@ -125,8 +124,8 @@ trait Authentication
         event(new PasswordReset($user));
 
         //Invalidate rest of reset tokens for same user
-        DB::table('password_reset_tokens')->where('email',$user->email)->delete();
-        
+        DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+
         Auth::guard()->login($user);
     }
 }
