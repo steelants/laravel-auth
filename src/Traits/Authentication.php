@@ -74,7 +74,7 @@ trait Authentication
     public function resetPost(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'exists:users,email'],
         ]);
 
         if (method_exists($this, 'verifyResetAttempt')) {
