@@ -95,4 +95,38 @@ trait Authentication
             'email' => $request->email
         ]);
     }
+
+        public function resetPasswordSubmit(Request $request)
+    {
+        $request->validate([
+            'token' => ['required'],
+            'email' => ['required','email'],
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        $response = PasswordFacade::broker()->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) { 
+                $this->resetPassword($user, $password); 
+            }
+        );
+
+        return $response == PasswordFacade::PASSWORD_RESET
+            ? redirect()->route($this->redirect)->with('status', trans($response))
+            : redirect()->back() ->withInput($request->only('email')) ->withErrors(['email' => trans($response)]);
+    }
+
+    protected function resetPassword($user, $password)
+    {
+        $user->password = Hash::make($password);
+        $user->setRememberToken(Str::random(60));
+        $user->save();
+
+        event(new PasswordReset($user));
+
+        //Invalidate rest of reset tokens for same user
+        DB::table('password_reset_tokens')->where('email',$user->email)->delete();
+        
+        Auth::guard()->login($user);
+    }
 }
