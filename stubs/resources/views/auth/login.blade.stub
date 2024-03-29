@@ -24,9 +24,9 @@
     @endif
 
     <input type="submit" value="{{ __('Login') }}">
-    @if (Route::has('register'))
+        @if (Route::has('register'))
         <a href="{{ route('register') }}">
-            {{ __('Registration') }} ?
+            {{ __('Register') }} ?
         </a>
     @endif
 </form>
