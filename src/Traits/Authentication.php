@@ -56,7 +56,7 @@ trait Authentication
         }
 
         $credentials = $validated;
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->has('remember'))) {
             return redirect()->route($this->redirect);
         }
 
@@ -129,7 +129,6 @@ trait Authentication
 
         //Invalidate rest of reset tokens for same user
         DB::table('password_reset_tokens')->where('email', $user->email)->delete();
-
         Auth::guard()->login($user);
     }
 }
