@@ -39,8 +39,11 @@ trait Authentication
         return back()->with('error', 'Sesprávné jméno nebo heslo');
     }
 
-    public function login()
+    public function login(Request $request)
     {
+        if (url()->previous() != url()->current() && !session()->has('previous-url') && url()->previous() != route("logout")){
+            session(['previous-url' => url()->previous()]);
+        }
         return view('auth.login');
     }
 
@@ -56,8 +59,10 @@ trait Authentication
         }
 
         $credentials = $validated;
-        if (Auth::attempt($credentials)) {
-            return redirect()->route($this->redirect);
+        if (Auth::attempt($credentials, $request->has('remember'))) {
+            $url = session('previous-url',route($this->redirect));
+            session()->forget('previous-url');
+            return redirect($url);
         }
 
         return back()->with('error', 'Sesprávné jméno nebo heslo');

@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
 use SteelAnts\LaravelAuth\Routing\AuthRoutesMixin;
-use SteelAnts\LaravelAuth\Console\Commands\Install;
+use SteelAnts\LaravelAuth\Console\Commands\InstallCommand;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -16,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
             return;
 
         $this->commands([
-            Install::class
+            InstallCommand::class
         ]);
     }
 

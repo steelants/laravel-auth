@@ -5,7 +5,7 @@ namespace SteelAnts\LaravelAuth\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class Install extends Command
+class InstallCommand extends Command
 {
     protected $signature = 'auth:install
                             {--force : Overwrite existing}';
@@ -18,6 +18,8 @@ class Install extends Command
         self::exportStubs('app');
         self::exportStubs('resources');
 
+        $this->components->info('Adding Routes');
+        self::appendRoutes();
     }
 
     protected function exportStubs($type = "app")
@@ -42,6 +44,17 @@ class Install extends Command
 
             copy($stubFullPath, $viewFullPath);
         }
+    }
+
+    protected function appendRoutes(string $RouteType = "web")
+    {
+        $RouteFilePath = base_path('routes/' . $RouteType . '.php');
+
+        if (strpos(file_get_contents($RouteFilePath), 'Route::auth();') !== false) {
+            return;
+        }
+
+        file_put_contents($RouteFilePath, "Route::auth();", FILE_APPEND);
     }
 
     protected function checkDirectory($directory)
