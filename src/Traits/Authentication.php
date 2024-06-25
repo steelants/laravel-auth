@@ -15,7 +15,7 @@ use Illuminate\Auth\Events\PasswordReset;
 
 trait Authentication
 {
-    public string $redirect = 'home';
+    //protected string $redirect = 'home';
 
     public function register()
     {
@@ -26,7 +26,7 @@ trait Authentication
     {
         $validated = $request->validate([
             'name' => ['required', 'max:255'],
-            'email' => ['required', 'unique:users,email'],
+            'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
@@ -59,8 +59,9 @@ trait Authentication
         }
 
         $credentials = $validated;
-        if (Auth::attempt($credentials, $request->has('remember'))) {
-            $url = session('previous-url',route($this->redirect));
+
+        if (Auth::attempt($credentials)) {
+            $url = session('previous-url',route($this->redirectPath()));
             session()->forget('previous-url');
             return redirect($url);
         }
@@ -82,7 +83,7 @@ trait Authentication
     public function resetPost(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'exists:users,email'],
         ]);
 
         if (method_exists($this, 'verifyResetAttempt')) {
@@ -119,7 +120,7 @@ trait Authentication
         );
 
         return $status  == PasswordFacade::PASSWORD_RESET
-            ? redirect()->route($this->redirect)->with('status', trans($status ))
+            ? redirect()->route($this->redirectPath())->with('status', trans($status ))
             : redirect()->back()->withInput($request->only('email'))->withErrors(['email' => trans($status )]);
     }
 
@@ -136,5 +137,13 @@ trait Authentication
         DB::table('password_reset_tokens')->where('email', $user->email)->delete();
 
         Auth::guard()->login($user);
+    }
+
+    private function redirectPath(){
+        if (method_exists($this, 'redirectTo')) {
+            return $this->redirectTo();
+        }
+
+        return property_exists($this, 'redirectTo') ? $this->redirectTo : 'home';
     }
 }
