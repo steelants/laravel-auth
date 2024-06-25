@@ -15,7 +15,7 @@ use Illuminate\Auth\Events\PasswordReset;
 
 trait Authentication
 {
-    public string $redirect = 'home';
+    //protected string $redirect = 'home';
 
     public function register()
     {
@@ -56,8 +56,8 @@ trait Authentication
         }
 
         $credentials = $validated;
-        if (Auth::attempt($credentials, $request->has('remember'))) {
-            return redirect()->route($this->redirect);
+        if (Auth::attempt($credentials)) {
+            return redirect()->route($this->redirectPath());
         }
 
         return back()->with('error', 'Sesprávné jméno nebo heslo');
@@ -114,7 +114,7 @@ trait Authentication
         );
 
         return $status  == PasswordFacade::PASSWORD_RESET
-            ? redirect()->route($this->redirect)->with('status', trans($status ))
+            ? redirect()->route($this->redirectPath())->with('status', trans($status ))
             : redirect()->back()->withInput($request->only('email'))->withErrors(['email' => trans($status )]);
     }
 
@@ -129,6 +129,15 @@ trait Authentication
 
         //Invalidate rest of reset tokens for same user
         DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+
         Auth::guard()->login($user);
+    }
+
+    private function redirectPath(){
+        if (method_exists($this, 'redirectTo')) {
+            return $this->redirectTo();
+        }
+
+        return property_exists($this, 'redirectTo') ? $this->redirectTo : 'home';
     }
 }
