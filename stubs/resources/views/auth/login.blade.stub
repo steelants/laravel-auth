@@ -16,9 +16,8 @@
             <strong>{{ $message }}</strong><br>
         </span>
     @enderror
-    <input type="checkbox" id="remember" name="remember"><br>
 
-    
+    <input type="checkbox" id="remember" name="remember"><br>
 
     @if (Route::has('password'))
         <a href="{{ route('password') }}">
