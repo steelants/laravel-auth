@@ -55,7 +55,9 @@ trait Authentication
         ]);
 
         if (method_exists($this, 'verifyLoginAttempt')) {
-            $this->verifyLoginAttempt($request);
+            if($this->verifyLoginAttempt($request)){
+                return back()->with('error', 'Sesprávné jméno nebo heslo');
+            }
         }
 
         $credentials = $validated;
@@ -160,6 +162,13 @@ trait Authentication
     }
 
     // public function loginAttempt($credentials): bool
+    // {
+    //     if (true) {
+    //         return true;
+    //     }
+    // }
+
+    // public function loginAttempt(Request $request): bool
     // {
     //     if (true) {
     //         return true;
