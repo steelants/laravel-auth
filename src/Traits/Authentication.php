@@ -65,7 +65,7 @@ trait Authentication
                 return $this->getRegirect();
             }
         } else {
-            if (Auth::attempt($credentials)) {
+            if (Auth::attempt($credentials, $request->has('remember'))) {
                 return $this->getRegirect();
             }
         }
