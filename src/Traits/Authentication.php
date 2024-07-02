@@ -41,7 +41,7 @@ trait Authentication
 
     public function login(Request $request)
     {
-        if (url()->previous() != url()->current() && !session()->has('previous-url') && url()->previous() != route("logout")){
+        if (url()->previous() != url()->current() && !session()->has('previous-url') && url()->previous() != route("logout")) {
             session(['previous-url' => url()->previous()]);
         }
         return view('auth.login');
@@ -60,10 +60,14 @@ trait Authentication
 
         $credentials = $validated;
 
-        if (Auth::attempt($credentials)) {
-            $url = session('previous-url',route($this->redirectPath()));
-            session()->forget('previous-url');
-            return redirect($url);
+        if (method_exists($this, 'loginAttempt')) {
+            if ($this->loginAttempt($credentials)) {
+                return $this->getRegirect();
+            }
+        } else {
+            if (Auth::attempt($credentials)) {
+                return $this->getRegirect();
+            }
         }
 
         return back()->with('error', 'Sesprávné jméno nebo heslo');
@@ -120,8 +124,8 @@ trait Authentication
         );
 
         return $status  == PasswordFacade::PASSWORD_RESET
-            ? redirect()->route($this->redirectPath())->with('status', trans($status ))
-            : redirect()->back()->withInput($request->only('email'))->withErrors(['email' => trans($status )]);
+            ? redirect()->route($this->redirectPath())->with('status', trans($status))
+            : redirect()->back()->withInput($request->only('email'))->withErrors(['email' => trans($status)]);
     }
 
     protected function resetPassword($user, $password)
@@ -139,11 +143,26 @@ trait Authentication
         Auth::guard()->login($user);
     }
 
-    private function redirectPath(){
+    private function redirectPath() : string
+    {
         if (method_exists($this, 'redirectTo')) {
             return $this->redirectTo();
         }
 
         return property_exists($this, 'redirectTo') ? $this->redirectTo : 'home';
     }
+
+    private function getRegirect(): RedirectResponse
+    {
+        $url = session('previous-url', route($this->redirectPath()));
+        session()->forget('previous-url');
+        return redirect($url);
+    }
+
+    // public function loginAttempt($credentials): bool
+    // {
+    //     if (true) {
+    //         return true;
+    //     }
+    // }
 }
