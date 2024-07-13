@@ -63,11 +63,11 @@ trait Authentication
         $credentials = $validated;
 
         if (method_exists($this, 'loginAttempt')) {
-            if ($this->loginAttempt($credentials, $request->has('remember'))) {
+            if ($this->loginAttempt($credentials, $request->boolean('remember'))) {
                 return $this->getRegirect();
             }
         } else {
-            if (Auth::attempt($credentials, $request->has('remember'))) {
+            if (Auth::attempt($credentials, $request->boolean('remember'))) {
                 return $this->getRegirect();
             }
         }
@@ -75,9 +75,11 @@ trait Authentication
         return back()->with('error', 'Sesprávné jméno nebo heslo');
     }
 
-    public function logout(): RedirectResponse
+    public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('login');
     }
 
