@@ -63,7 +63,7 @@ trait Authentication
         $credentials = $validated;
 
         if (method_exists($this, 'loginAttempt')) {
-            if ($this->loginAttempt($credentials)) {
+            if ($this->loginAttempt($credentials), $request->has('remember')) {
                 return $this->getRegirect();
             }
         } else {
