@@ -22,6 +22,10 @@ class AuthServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        //Do not register routes before instalation since it can collide vith otehr modules
+        if(!class_exists('App\Http\Controllers\AuthController'))
+            return;
+
         Route::mixin(new AuthRoutesMixin);
     }
 }
