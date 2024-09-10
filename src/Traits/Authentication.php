@@ -41,7 +41,7 @@ trait Authentication
 
     public function login(Request $request)
     {
-        if (url()->previous() != url()->current() && !session()->has('previous-url') && url()->previous() != route("logout")) {
+        if (url()->previous() != url()->current() && !session()->has('previous-url') && url()->previous() != route("logout") && url()->previous() != route("login")) {
             session(['previous-url' => url()->previous()]);
         }
         return view('auth.login');
