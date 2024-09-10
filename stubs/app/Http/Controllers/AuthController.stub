@@ -4,8 +4,13 @@ namespace App\Http\Controllers;
 
 use SteelAnts\LaravelAuth\Traits\Authentication;
 
-
-class AuthController
+class AuthController extends Controller
 {
     use Authentication;
+    
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+        $this->middleware('auth')->only('logout');
+    }
 }
