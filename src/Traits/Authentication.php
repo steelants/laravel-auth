@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Password as PasswordFacade;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Route;
 
 trait Authentication
 {
@@ -41,8 +42,12 @@ trait Authentication
 
     public function login(Request $request)
     {
-        if (url()->previous() != url()->current() && !session()->has('previous-url') && url()->previous() != route("logout") && url()->previous() != route("login")) {
-            session(['previous-url' => url()->previous()]);
+        $url = url()->previous();
+        if ($url != url()->current() && !session()->has('previous-url') && $url != route("logout")) {
+            //Check if url you are redirecting to actually exists
+            if (Route::getRoutes()->match(Request::create($url))){
+                session(['previous-url' => $url]);
+            }
         }
         return view('auth.login');
     }
@@ -63,11 +68,11 @@ trait Authentication
         $credentials = $validated;
 
         if (method_exists($this, 'loginAttempt')) {
-            if ($this->loginAttempt($credentials, $request->has('remember'))) {
+            if ($this->loginAttempt($credentials, $request->boolean('remember'))) {
                 return $this->getRegirect();
             }
         } else {
-            if (Auth::attempt($credentials, $request->has('remember'))) {
+            if (Auth::attempt($credentials, $request->boolean('remember'))) {
                 return $this->getRegirect();
             }
         }
@@ -75,9 +80,11 @@ trait Authentication
         return back()->with('error', 'Sesprávné jméno nebo heslo');
     }
 
-    public function logout(): RedirectResponse
+    public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('login');
     }
 

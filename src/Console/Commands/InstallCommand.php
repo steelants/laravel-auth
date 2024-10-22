@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\File;
 
 class InstallCommand extends Command
 {
-    protected $signature = 'auth:install
+    protected $signature = 'install:auth
                             {--force : Overwrite existing}';
 
     protected $description = 'Install Authentication scaffolding';

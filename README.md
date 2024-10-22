@@ -7,14 +7,14 @@
 ## Install
 1) Artisan Command 
 ```bash
-auth:install
+install:auth
 ```
 2) add routes to __web.php__
 ```php
 Route::auth();
 ```
 ### Dev Enviroment
-1) Clone Repo to `[LARVEL-ROOT]packages/`
+1) Clone Repo to `[LARVEL-ROOT]/packages/`
 2) Modify ;composer.json`
 ```json
     "autoload": {
@@ -25,9 +25,9 @@ Route::auth();
         }
     },
 ```
-3) Add (code below) to: `[LARVEL-ROOT]packages/bootstrap/providers.php`
+3) Add (code below) to: `[LARVEL-ROOT]/bootstrap/providers.php`
 ```php
-SteelAnts\\LaravelAuth\\AuthServiceProvider::class,
+SteelAnts\LaravelAuth\AuthServiceProvider::class,
 ```
 
 ## Contributors
