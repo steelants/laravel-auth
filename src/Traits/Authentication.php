@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Password as PasswordFacade;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Route;
 
 trait Authentication
 {
@@ -150,7 +151,11 @@ trait Authentication
     private function redirectPath() : string
     {
         if (method_exists($this, 'redirectTo')) {
-            return $this->redirectTo();
+            //Check if urfl you are redirecting to actually exists
+            $url = $this->redirectTo();
+            if (Route::getRoutes()->match(Request::create($url))){
+                return $url;
+            } 
         }
 
         return property_exists($this, 'redirectTo') ? $this->redirectTo : 'home';
