@@ -45,7 +45,6 @@ trait Authentication
         $url = url()->previous();
         if ($url != url()->current() && !session()->has('previous-url') && $url != route("logout")) {
             //Check if url you are redirecting to actually exists
-            $url = $this->redirectTo();
             if (Route::getRoutes()->match(Request::create($url))){
                 session(['previous-url' => $url]);
             }
