@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Password as PasswordFacade;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Route;
 
 trait Authentication
 {
@@ -41,8 +42,13 @@ trait Authentication
 
     public function login(Request $request)
     {
-        if (url()->previous() != url()->current() && !session()->has('previous-url') && url()->previous() != route("logout")) {
-            session(['previous-url' => url()->previous()]);
+        $url = url()->previous();
+        if ($url != url()->current() && !session()->has('previous-url') && $url != route("logout")) {
+            //Check if url you are redirecting to actually exists
+            $url = $this->redirectTo();
+            if (Route::getRoutes()->match(Request::create($url))){
+                session(['previous-url' => $url]);
+            }
         }
         return view('auth.login');
     }
