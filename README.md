@@ -7,7 +7,7 @@
 ## Install
 1) Artisan Command 
 ```bash
-auth:install
+install:auth
 ```
 2) add routes to __web.php__
 ```php
