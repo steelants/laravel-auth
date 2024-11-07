@@ -69,10 +69,12 @@ trait Authentication
 
         if (method_exists($this, 'loginAttempt')) {
             if ($this->loginAttempt($credentials, $request->boolean('remember'))) {
+                $request->session()->regenerate();
                 return $this->getRegirect();
             }
         } else {
             if (Auth::attempt($credentials, $request->boolean('remember'))) {
+                $request->session()->regenerate();
                 return $this->getRegirect();
             }
         }
