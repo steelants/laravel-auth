@@ -20,7 +20,7 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                $url = session('previous-url', route('home'));
+                $url = session('previous-url', url()->previous());
                 session()->forget('previous-url');
                 if ($url != url()->current() && Route::getRoutes()->match(Request::create($url))){
                     return redirect($url);
