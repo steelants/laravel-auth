@@ -3,9 +3,18 @@
 namespace App\Http\Controllers;
 
 use SteelAnts\LaravelAuth\Traits\Authentication;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use App\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Routing\Controllers\Middleware;
 
-
-class AuthController
+class AuthController implements HasMiddleware
 {
     use Authentication;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(RedirectIfAuthenticated::class, except: ['logout', 'login']),
+        ];
+    }
 }
