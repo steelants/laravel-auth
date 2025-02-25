@@ -37,7 +37,7 @@ trait Authentication
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return back()->with('error', 'Sesprávné jméno nebo heslo');
+        return back()->with('success', 'Registered');
     }
 
     public function login(Request $request)
