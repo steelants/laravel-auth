@@ -13,21 +13,37 @@ install:auth
 ```php
 Route::auth();
 ```
-### Dev Enviroment
-1) Clone Repo to `[LARVEL-ROOT]/packages/`
-2) Modify ;composer.json`
-```json
-    "autoload": {
-        "psr-4": {
-            ...
-            "SteelAnts\\LaravelAuth\\": "packages/laravel-auth/src/"
-            ...
-        }
-    },
+
+## Development
+
+1. Create subfolder `/packages` at root of your laravel project
+
+2. clone repository to sub folder `/packages` (you need to be positioned at root of your laravel project in your terminal)
+```bash
+git clone https://github.com/steelants/laravel-auth.git ./packages/laravel-auth
 ```
-3) Add (code below) to: `[LARVEL-ROOT]/bootstrap/providers.php`
+
+3. edit composer.json file
+```json
+"autoload": {
+	"psr-4": {
+		"SteelAnts\\LaravelAuth\\": "packages/laravel-auth/src/"
+	}
+}
+```
+
+4. Add provider to `bootstrap/providers.php`
 ```php
-SteelAnts\LaravelAuth\AuthServiceProvider::class,
+return [
+	...
+	SteelAnts\LaravelAuth\AuthServiceProvider::class,
+	...
+];
+```
+
+6. aplicate packages changes
+```bash
+php artisan install:auth --force
 ```
 
 ## Contributors
