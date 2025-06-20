@@ -55,7 +55,7 @@ trait Authentication
     public function loginPost(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'email' => ['required', 'exists:users,email'],
+            'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
