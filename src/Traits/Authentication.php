@@ -42,6 +42,11 @@ trait Authentication
 
     public function login(Request $request)
     {
+        if ($request->session()->has('from_logout')) {
+            $request->session()->forget(['from_logout']);
+            return view('auth.login');
+        }
+        
         $url = url()->previous();
         if ($url != url()->current() && !session()->has('previous-url') && $url != route("logout")) {
             //Check if url you are redirecting to actually exists
@@ -87,6 +92,9 @@ trait Authentication
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        $request->session()->flash('from_logout', true);
+        
         return redirect()->route('login');
     }
 
