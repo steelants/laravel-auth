@@ -2,7 +2,6 @@
 
 namespace SteelAnts\LaravelAuth\Tests;
 
-use Illuminate\Auth\Events\Attempting;
 use Orchestra\Testbench\Factories\UserFactory;
 use Orchestra\Testbench\TestCase;
 

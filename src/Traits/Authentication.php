@@ -26,9 +26,20 @@ trait Authentication
     public function registerPost(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => ['required', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'name'     => [
+                'required',
+                'max:255',
+            ],
+            'email'    => [
+                'required',
+                'email',
+                'unique:users,email',
+            ],
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8),
+            ],
         ]);
 
         $user = new User();
@@ -46,11 +57,11 @@ trait Authentication
             $request->session()->forget(['from_logout']);
             return view('auth.login');
         }
-        
+
         $url = url()->previous();
         if ($url != url()->current() && !session()->has('previous-url') && $url != route("logout")) {
             //Check if url you are redirecting to actually exists
-            if (Route::getRoutes()->match(Request::create($url))){
+            if (Route::getRoutes()->match(Request::create($url))) {
                 session(['previous-url' => $url]);
             }
         }
@@ -60,12 +71,15 @@ trait Authentication
     public function loginPost(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'email' => ['required', 'email'],
+            'email'    => [
+                'required',
+                'email',
+            ],
             'password' => ['required'],
         ]);
 
         if (method_exists($this, 'verifyLoginAttempt')) {
-            if($this->verifyLoginAttempt($request)){
+            if ($this->verifyLoginAttempt($request)) {
                 return back()->with('error', 'Sesprávné jméno nebo heslo');
             }
         }
@@ -94,7 +108,7 @@ trait Authentication
         $request->session()->regenerateToken();
 
         $request->session()->flash('from_logout', true);
-        
+
         return redirect()->route('login');
     }
 
@@ -106,7 +120,11 @@ trait Authentication
     public function resetPost(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email', 'exists:users,email'],
+            'email' => [
+                'required',
+                'email',
+                'exists:users,email',
+            ],
         ]);
 
         if (method_exists($this, 'verifyResetAttempt')) {
@@ -114,25 +132,30 @@ trait Authentication
         }
 
         $status = PasswordFacade::sendResetLink($request->only('email'));
-        return $status == PasswordFacade::RESET_LINK_SENT
-            ? back()->with('status', trans($status))
-            : back()->withInput($request->only('email'))->withErrors(['email' => trans($status)]);
+        return $status == PasswordFacade::RESET_LINK_SENT ? back()->with('status', trans($status)) : back()->withInput($request->only('email'))->withErrors(['email' => trans($status)]);
     }
 
     public function resetToken(Request $request, string $token)
     {
         return view('auth.reset')->with([
             'token' => $token,
-            'email' => $request->input('email')
+            'email' => $request->input('email'),
         ]);
     }
 
     public function resetPasswordSubmit(Request $request)
     {
         $request->validate([
-            'token' => ['required'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'token'    => ['required'],
+            'email'    => [
+                'required',
+                'email',
+            ],
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8),
+            ],
         ]);
 
         $status  = PasswordFacade::reset(
@@ -142,15 +165,13 @@ trait Authentication
             }
         );
 
-        return $status  == PasswordFacade::PASSWORD_RESET
-            ? redirect()->route($this->redirectPath())->with('status', trans($status))
-            : redirect()->back()->withInput($request->only('email'))->withErrors(['email' => trans($status)]);
+        return $status == PasswordFacade::PASSWORD_RESET ? redirect()->route($this->redirectPath())->with('status', trans($status)) : redirect()->back()->withInput($request->only('email'))->withErrors(['email' => trans($status)]);
     }
 
     protected function resetPassword($user, $password)
     {
         $user->forceFill([
-            'password' => Hash::make($password)
+            'password' => Hash::make($password),
         ])->setRememberToken(Str::random(60));
         $user->save();
 
@@ -162,7 +183,7 @@ trait Authentication
         Auth::guard()->login($user);
     }
 
-    private function redirectPath() : string
+    private function redirectPath(): string
     {
         if (method_exists($this, 'redirectTo')) {
             return $this->redirectTo();

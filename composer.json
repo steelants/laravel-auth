@@ -1,32 +1,44 @@
 {
-    "name": "steelants/laravel-auth",
-    "description": "Laravel Auth",
-    "license": "MIT",
-    "type": "library",
-    "authors": [
-        {
-            "name": "SteelAnts",
-            "email": "info@steelants.cz"
-        }
-    ],
-    "require": {
-        "laravel/framework": "^11.0|^12.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^9.3|^10.4",
-        "barryvdh/laravel-debugbar": "^3.9",
-        "orchestra/testbench": "^7.0|^8.0|^9.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "SteelAnts\\LaravelAuth\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "SteelAnts\\LaravelAuth\\AuthServiceProvider"
-            ]
-        }
-    }
+	"name": "steelants/laravel-auth",
+	"description": "Laravel Auth",
+	"license": "MIT",
+	"type": "library",
+	"authors": [
+		{
+			"name": "SteelAnts",
+			"email": "info@steelants.cz"
+		}
+	],
+	"require": {
+		"laravel/framework": "^11.0|^12.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^9.3|^10.4",
+		"barryvdh/laravel-debugbar": "^3.9",
+		"orchestra/testbench": "^7.0|^8.0|^9.0",
+        "squizlabs/php_codesniffer": "^4.0",
+        "slevomat/coding-standard": "^8.19"
+	},
+	"autoload": {
+		"psr-4": {
+			"SteelAnts\\LaravelAuth\\": "src/"
+		}
+	},
+	"extra": {
+		"laravel": {
+			"providers": [
+				"SteelAnts\\LaravelAuth\\AuthServiceProvider"
+			]
+		}
+	},
+	"scripts": {
+		"check-static": "phpstan --memory-limit=2g",
+		"format": "phpcbf -v -d memory_limit=512M",
+		"lint": "phpcs"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	}
 }
