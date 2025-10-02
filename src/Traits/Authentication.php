@@ -18,6 +18,12 @@ trait Authentication
 {
     //protected string $redirect = 'home';
 
+	public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+        $this->middleware('auth:web,ldap')->only('logout');
+    }
+
     public function register()
     {
         return view('auth.registration');
