@@ -21,7 +21,7 @@ trait Authentication
 	public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        $this->middleware('auth:web,ldap')->only('logout');
+        $this->middleware('auth')->only('logout');
     }
 
     public function register()
