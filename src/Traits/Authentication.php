@@ -86,7 +86,7 @@ trait Authentication
 
         if (method_exists($this, 'verifyLoginAttempt')) {
             if ($this->verifyLoginAttempt($request)) {
-                return back()->with('error', 'Sesprávné jméno nebo heslo');
+                return back()->with('error', __('Nesprávné jméno nebo heslo'));
             }
         }
 
@@ -104,7 +104,7 @@ trait Authentication
             }
         }
 
-        return back()->with('error', 'Sesprávné jméno nebo heslo');
+        return back()->with('error', __('Nesprávné jméno nebo heslo'));
     }
 
     public function logout(Request $request): RedirectResponse
