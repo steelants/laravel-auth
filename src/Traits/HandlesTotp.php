@@ -2,17 +2,11 @@
 
 namespace SteelAnts\LaravelAuth\Traits;
 
-use Endroid\QrCode\QrCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\ErrorCorrectionLevel;
-use Endroid\QrCode\RoundBlockSizeMode;
-use Endroid\QrCode\Writer\PngWriter;
 use SteelAnts\LaravelAuth\Support\Totp;
-use Endroid\QrCode\Color\Color;
 
 trait HandlesTotp
 {
@@ -79,7 +73,7 @@ trait HandlesTotp
         }
 
         $otpauth = Totp::otpauthUrl($user->email, config('app.name', 'Laravel'), $secret);
-        $qrDataUri = $this->buildTotpQr($otpauth);
+        $qrDataUri = Totp::buildTotpQr($otpauth);
 
         return view('auth.totp', [
             'otpauth' => $otpauth,
@@ -124,22 +118,5 @@ trait HandlesTotp
         $request->session()->put('totp_passed', true);
 
         return redirect()->intended($this->redirectPath());
-    }
-
-    protected function buildTotpQr(string $otpauth): string
-    {
-		$writer = new PngWriter;
-        $qrCode = new QrCode(
-            data: $otpauth,
-            encoding: new Encoding('UTF-8'),
-            errorCorrectionLevel: ErrorCorrectionLevel::Low,
-            size: 300,
-            margin: 10,
-            roundBlockSizeMode: RoundBlockSizeMode::Margin,
-            foregroundColor: new Color(0, 0, 0),
-            backgroundColor: new Color(255, 255, 255)
-        );
-
-        return $writer->write($qrCode)->getDataUri();
     }
 }
