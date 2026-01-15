@@ -1,10 +1,12 @@
 <?php
 
-namespace SteelAnts\LaravelAuth\Tests;
+namespace SteelAnts\LaravelAuth\Tests\Feature;
 
+use Database\Factories\UserFactory;
 use Illuminate\Auth\Events\Attempting;
-use Orchestra\Testbench\Factories\UserFactory;
-use Orchestra\Testbench\TestCase;
+use Illuminate\Support\Facades\Route;
+use SteelAnts\LaravelBoilerplate\Support\MenuItemLink;
+use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
