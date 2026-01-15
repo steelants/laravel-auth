@@ -92,16 +92,9 @@ trait Authentication
 
         $credentials = $validated;
 
-        if (method_exists($this, 'loginAttempt')) {
-            if ($this->loginAttempt($credentials, $request->boolean('remember'))) {
-                $request->session()->regenerate();
-                return $this->getRegirect();
-            }
-        } else {
-            if (Auth::attempt($credentials, $request->boolean('remember'))) {
-                $request->session()->regenerate();
-                return $this->getRegirect();
-            }
+        if ($this->loginAttempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            return $this->afterLoginRedirect($request);
         }
 
         return back()->with('error', __('Nesprávné jméno nebo heslo'));
@@ -189,13 +182,30 @@ trait Authentication
         Auth::guard()->login($user);
     }
 
-    private function redirectPath(): string
+    protected function redirectPath(): string
     {
         if (method_exists($this, 'redirectTo')) {
             return $this->redirectTo();
         }
 
         return property_exists($this, 'redirectTo') ? $this->redirectTo : 'home';
+    }
+
+    private function afterLoginRedirect(Request $request): RedirectResponse
+    {
+        if (method_exists($this, 'redirectIfEmailUnverified')) {
+            if ($redirect = $this->redirectIfEmailUnverified($request)) {
+                return $redirect;
+            }
+        }
+
+        if (method_exists($this, 'responseIfTotpRequired')) {
+            if ($response = $this->responseIfTotpRequired($request)) {
+                return $response;
+            }
+        }
+
+        return $this->getRegirect();
     }
 
     private function getRegirect(): RedirectResponse

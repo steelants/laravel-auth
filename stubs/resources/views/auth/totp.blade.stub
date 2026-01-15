@@ -1,0 +1,31 @@
+<x-layout-auth>
+<div>
+    <h1>{{ __('Two-factor authentication') }}</h1>
+    @if(!$hasTotp)
+        <p>{{ __('Scan the QR code or enter the secret into your authenticator app, then submit the generated code to enable TOTP.') }}</p>
+        <div>
+            <img src="{{ $qrDataUri }}" alt="TOTP QR">
+        </div>
+        <div>
+            <p>{{ __('Secret') }}</p>
+            <strong>{{ $secret }}</strong>
+        </div>
+    @else
+        <p>{{ __('Enter your current TOTP code to continue.') }}</p>
+    @endif
+
+    <form method="POST" action="{{ route('totp.verify') }}">
+        @csrf
+        <div>
+            <label for="code">{{ __('Authentication code') }}</label>
+            <input id="code" type="text" name="code" required autofocus inputmode="numeric" pattern="\d{6}">
+            @error('code')
+                <div role="alert">
+                    <strong>{{ $message }}</strong>
+                </div>
+            @enderror
+        </div>
+        <button type="submit">{{ __('Confirm') }}</button>
+    </form>
+</div>
+</x-layout-auth>
