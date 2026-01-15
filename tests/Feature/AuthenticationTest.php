@@ -3,22 +3,23 @@
 namespace SteelAnts\LaravelAuth\Tests\Feature;
 
 use Database\Factories\UserFactory;
-use Illuminate\Auth\Events\Attempting;
-use Illuminate\Support\Facades\Route;
-use SteelAnts\LaravelBoilerplate\Support\MenuItemLink;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    /** @test */
-    public function it_can_user_login()
+    use RefreshDatabase;
+
+    public function test_it_can_user_login()
     {
         $user = UserFactory::new()->create();
 
-        $this->visit('/login')
-            ->type($user->email, 'email')
-            ->type('password', 'password')
-            ->press('login')
-            ->seePageIs('/home');
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/home');
+        $this->assertAuthenticatedAs($user);
     }
 }
