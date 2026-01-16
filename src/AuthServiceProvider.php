@@ -4,6 +4,7 @@ namespace SteelAnts\LaravelAuth;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use SteelAnts\LaravelAuth\Middleware\EnsureEmailIsVerified;
 use SteelAnts\LaravelAuth\Middleware\EnsureTotpVerified;
 use SteelAnts\LaravelAuth\Routing\AuthRoutesMixin;
 use SteelAnts\LaravelAuth\Console\Commands\InstallCommand;
@@ -22,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->app['router']->aliasMiddleware('verified', EnsureEmailIsVerified::class);
         $this->app['router']->aliasMiddleware('verified.totp', EnsureTotpVerified::class);
 
         //Do not register routes before instalation since it can collide vith otehr modules

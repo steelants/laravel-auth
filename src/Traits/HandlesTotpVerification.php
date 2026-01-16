@@ -8,27 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use SteelAnts\LaravelAuth\Support\Totp;
 
-trait HandlesTotp
+trait HandlesTotpVerification
 {
-    protected function responseIfTotpRequired(Request $request): Response|RedirectResponse|null
-    {
-        $user = $request->user();
-
-        if (!$user) {
-            return null;
-        }
-
-        $hasTotp = !empty($user->totp_secret);
-        $forceTotp = (bool) ($user->totp_force ?? false);
-        $totpVerified = (bool) $request->session()->get('totp_passed');
-
-        if (($forceTotp && !$hasTotp) || ($hasTotp && !$totpVerified)) {
-            return $request->expectsJson() ? abort(403, 'Two-factor authentication required.') : redirect()->route('totp.prompt');
-        }
-
-        return null;
-    }
-
     protected function totpIsSatisfied(?object $user, Request $request): bool
     {
         if (!$user) {
