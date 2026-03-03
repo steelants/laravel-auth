@@ -92,9 +92,16 @@ trait Authentication
 
         $credentials = $validated;
 
-        if ($this->loginAttempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-            return $this->afterLoginRedirect($request);
+		if (method_exists($this, 'loginAttempt')) {
+            if ($this->loginAttempt($credentials, $request->boolean('remember'))) {
+                $request->session()->regenerate();
+                return $this->getRegirect();
+            }
+        } else {
+            if (Auth::attempt($credentials, $request->boolean('remember'))) {
+                $request->session()->regenerate();
+                return $this->getRegirect();
+            }
         }
 
         return back()->with('error', __('Nesprávné jméno nebo heslo'));
