@@ -15,8 +15,8 @@ class AuthRoutesMixin
                 }
 
                 if ($options['logout'] ?? true) {
-                    $this->post('/logout', 'AuthController@logout')->name('logout');
-                    $this->get('/logout', 'AuthController@logout');
+					$this->post('/logout', 'AuthController@logout')->withoutMiddleware(['verified', 'verified.totp'])->name('logout');
+                    $this->get('/logout', 'AuthController@logout')->withoutMiddleware(['verified', 'verified.totp']);
                 }
 
                 if ($options['register'] ?? true) {
