@@ -65,7 +65,8 @@ trait Authentication
         }
 
         $url = url()->previous();
-		if ($url != url()->current() && !session()->has('previous-url') && !in_array($url, [route("logout"), route("register")])) {
+		$excludedUrls = array_filter([route("logout"), Route::has('register') ? route("register") : null]);
+		if ($url != url()->current() && !session()->has('previous-url') && !in_array($url, $excludedUrls)) {
             //Check if url you are redirecting to actually exists
             if (Route::getRoutes()->match(Request::create($url))) {
                 session(['previous-url' => $url]);
