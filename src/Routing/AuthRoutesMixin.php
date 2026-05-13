@@ -2,6 +2,9 @@
 
 namespace SteelAnts\LaravelAuth\Routing;
 
+use SteelAnts\LaravelAuth\Middleware\EnsureEmailIsVerified;
+use SteelAnts\LaravelAuth\Middleware\EnsureTotpVerified;
+
 class AuthRoutesMixin
 {
     public function auth()
@@ -15,8 +18,8 @@ class AuthRoutesMixin
                 }
 
                 if ($options['logout'] ?? true) {
-					$this->post('/logout', 'AuthController@logout')->withoutMiddleware(['verified', 'verified.totp'])->name('logout');
-                    $this->get('/logout', 'AuthController@logout')->withoutMiddleware(['verified', 'verified.totp']);
+                    $this->post('/logout', 'AuthController@logout')->withoutMiddleware([EnsureEmailIsVerified::class, EnsureTotpVerified::class])->name('logout');
+                    $this->get('/logout', 'AuthController@logout')->withoutMiddleware([EnsureEmailIsVerified::class, EnsureTotpVerified::class]);
                 }
 
                 if ($options['register'] ?? true) {
@@ -31,17 +34,17 @@ class AuthRoutesMixin
                     $this->post('/password/reset/', 'AuthController@resetPasswordSubmit')->middleware(['throttle:6,1'])->name('password.update');
                 }
 
-				if ($options['verify'] ?? false) {
-					$this->pushMiddlewareToGroup('web', 'verified');
-					$this->get('/email/verify', 'AuthController@verificationNotice')->middleware('auth') ->withoutMiddleware('verified') ->name('verification.notice');
-					$this->get('/email/verify/{id}/{hash}', 'AuthController@verifyEmail')->middleware(['auth', 'signed', 'throttle:6,1']) ->withoutMiddleware('verified')->name('verification.verify');
-					$this->post('/email/resend', 'AuthController@resendVerification')->middleware(['auth', 'throttle:6,1']) ->withoutMiddleware('verified')->name('verification.resend');
+                if ($options['verify'] ?? false) {
+                    $this->pushMiddlewareToGroup('web', EnsureEmailIsVerified::class);
+                    $this->get('/email/verify', 'AuthController@verificationNotice')->middleware('auth')->withoutMiddleware([EnsureEmailIsVerified::class])->name('verification.notice');
+                    $this->get('/email/verify/{id}/{hash}', 'AuthController@verifyEmail')->middleware(['auth', 'signed', 'throttle:6,1'])->withoutMiddleware([EnsureEmailIsVerified::class])->name('verification.verify');
+                    $this->post('/email/resend', 'AuthController@resendVerification')->middleware(['auth', 'throttle:6,1'])->withoutMiddleware([EnsureEmailIsVerified::class])->name('verification.resend');
                 }
 
                 if ($options['totp'] ?? false) {
-					$this->pushMiddlewareToGroup('web', 'verified.totp');
-					$this->get('/two-factor', 'AuthController@totpPrompt') ->middleware('auth') ->withoutMiddleware('verified.totp') ->name('totp.prompt');
-					$this->post('/two-factor', 'AuthController@totpVerify') ->middleware(['auth', 'throttle:10,1']) ->withoutMiddleware('verified.totp') ->name('totp.verify');
+                    $this->pushMiddlewareToGroup('web', EnsureTotpVerified::class);
+                    $this->get('/two-factor', 'AuthController@totpPrompt')->middleware('auth')->withoutMiddleware([EnsureTotpVerified::class])->name('totp.prompt');
+                    $this->post('/two-factor', 'AuthController@totpVerify')->middleware(['auth', 'throttle:10,1'])->withoutMiddleware([EnsureTotpVerified::class])->name('totp.verify');
                 }
             });
         };
