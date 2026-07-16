@@ -75,11 +75,11 @@ The installer publishes all views to your application:
 
 ```
 resources/views/auth/
-├── login.blade.php
-├── registration.blade.php
-├── reset.blade.php
-├── totp.blade.php
-└── verify.blade.php
+|-- login.blade.php
+|-- registration.blade.php
+|-- reset.blade.php
+|-- totp.blade.php
+`-- verify.blade.php
 ```
 
 Published views can be modified freely.
