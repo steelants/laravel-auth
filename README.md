@@ -58,11 +58,14 @@ SteelAnts Laravel-Auth provides:
 
 ## Other Packages
 
-- [steelants/laravel-boilerplate](https://github.com/steelants/Laravel-Boilerplate)
-- [steelants/datatable](https://github.com/steelants/Livewire-DataTable)
-- [steelants/form](https://github.com/steelants/Laravel-Form)
-- [steelants/modal](https://github.com/steelants/Livewire-Modal)
-- [steelants/laravel-tenant](https://github.com/steelants/Laravel-Tenant)
+- [Livewire-DataTable](https://github.com/steelants/Livewire-DataTable)
+- [Laravel-Boilerplate.Warehouse](https://github.com/steelants/Laravel-Boilerplate.Warehouse)
+- [Laravel-Boilerplate](https://github.com/steelants/Laravel-Boilerplate)
+- [Laravel-Form](https://github.com/steelants/Laravel-Form)
+- [Livewire-Form](https://github.com/steelants/Livewire-Form)
+- [Laravel-General](https://github.com/steelants/Laravel-General)
+- [Laravel-Tenant](https://github.com/steelants/Laravel-Tenant)
+- [Livewire-Modal](https://github.com/steelants/Livewire-Modal)
 
 ## License
 
