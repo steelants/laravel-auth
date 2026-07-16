@@ -1,88 +1,69 @@
-# Laravel-Auth
-## Currently WIP
-### Created by: [SteelAnts s.r.o.](https://www.steelants.cz/)
+<div align="center">
 
-[![Total Downloads](https://img.shields.io/packagist/dt/steelants/laravel-auth.svg?style=flat-square)](https://packagist.org/packages/steelants/laravel-auth)
+<a href="https://steelants.cz">
+	<picture>
+		<source
+			media="(prefers-color-scheme: dark)"
+			srcset="https://steelants.cz/wp-content/uploads/2026/07/white_3.png">
+		<img
+			src="https://steelants.cz/wp-content/themes/wp_steelants_v5/img/logo.png"
+			alt="SteelAnts"
+			width="180">
+	</picture>
+</a>
 
-## Install
-1) Artisan Command
-```bash
-install:auth
-```
-2) add routes to __web.php__
-```php
-Route::auth();
-```
+<h1>Laravel-Auth</h1>
 
-### Optional Features
-*Both features are disabled by default to avoid route collisions.
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/steelants/laravel-auth.svg?style=flat-square)](https://packagist.org/packages/steelants/laravel-auth) [![Total Downloads](https://img.shields.io/packagist/dt/steelants/laravel-auth.svg?style=flat-square)](https://packagist.org/packages/steelants/laravel-auth)
 
-**Email verification**
-- Protects routes with the `verified` middleware and provides notice/verify/resend endpoints when enabled.
-- Requires `Route::auth(['verify' => true]);` and the `HandlesEmailVerification` plugin trait added to your `AuthController` next to `Authentication`.
+<p>
+A lightweight authentication scaffolding package for Laravel with login, registration, password reset, email verification and TOTP two-factor authentication.
+</p>
 
-**MFA (TOTP)**
-- Adds TOTP setup/verification screens and enforces checks via the `verified.totp` middleware.
-- Requires `Route::auth(['totp' => true]);` and the `HandlesTotp` plugin trait added to your `AuthController` next to `Authentication`.
-- Install QR dependency in your app: `composer require endroid/qr-code`.
+<p>
+Created by <a href="https://steelants.cz">SteelAnts s.r.o.</a>
+</p>
 
-### Auth controller setup
-Your `AuthController` pulls in the core auth trait, plus the plugin traits for optional features:
-```php
-use SteelAnts\LaravelAuth\Traits\Authentication;
-use SteelAnts\LaravelAuth\Traits\HandlesEmailVerification;
-use SteelAnts\LaravelAuth\Traits\HandlesTotp;
+</div>
 
-class AuthController extends Controller
-{
-    use Authentication;
-    use HandlesEmailVerification; // enable email verification flows
-    use HandlesTotp;              // enable TOTP MFA flows
-}
-```
+## Features
 
-## Development
+SteelAnts Laravel-Auth provides:
 
-1. Create subfolder `/packages` at root of your laravel project
+- Login and logout
+- User registration
+- Password reset
+- Email verification (optional)
+- TOTP two-factor authentication (optional)
+- Publishable controller and views
+- Customizable authentication hooks
 
-2. clone repository to sub folder `/packages` (you need to be positioned at root of your laravel project in your terminal)
-```bash
-git clone https://github.com/steelants/laravel-auth.git ./packages/laravel-auth
-```
+## Documentation
 
-3. edit composer.json file
-```json
-"autoload": {
-	"psr-4": {
-		"SteelAnts\\LaravelAuth\\": "packages/laravel-auth/src/"
-	}
-}
-```
-
-4. Add provider to `bootstrap/providers.php`
-```php
-return [
-	...
-	SteelAnts\LaravelAuth\AuthServiceProvider::class,
-	...
-];
-```
-
-6. aplicate packages changes
-```bash
-php artisan install:auth --force
-```
+- [Installation](docs/installation.md)
+- [Usage](docs/usage.md)
+- [Configuration](docs/configuration.md)
+- [Routes](docs/routes.md)
+- [Email Verification](docs/email-verification.md)
+- [Two-Factor Authentication](docs/totp.md)
+- [Customization](docs/customization.md)
+- [Development](docs/development.md)
+- [Testing](docs/testing.md)
 
 ## Contributors
+
 <a href="https://github.com/steelants/laravel-auth/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=steelants/laravel-auth" />
 </a>
 
 ## Other Packages
-[steelants/datatable](https://github.com/steelants/Livewire-DataTable)
 
-[steelants/form](https://github.com/steelants/Laravel-Form)
+- [steelants/laravel-boilerplate](https://github.com/steelants/Laravel-Boilerplate)
+- [steelants/datatable](https://github.com/steelants/Livewire-DataTable)
+- [steelants/form](https://github.com/steelants/Laravel-Form)
+- [steelants/modal](https://github.com/steelants/Livewire-Modal)
+- [steelants/laravel-tenant](https://github.com/steelants/Laravel-Tenant)
 
-[steelants/modal](https://github.com/steelants/Livewire-Modal)
+## License
 
-[steelants/boilerplate](https://github.com/steelants/Laravel-Boilerplate)
+This package is open-sourced software licensed under the [License](LICENSE).
