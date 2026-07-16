@@ -1,51 +1,102 @@
-# Usage
+# Configuration
 
-SteelAnts Laravel-Auth provides authentication using a published `AuthController` and a route mixin.
+SteelAnts Laravel-Auth is configured directly using route options and controller traits.
 
-The package handles:
-
-- Login and logout
-- User registration
-- Password reset
-- Email verification
-- TOTP two-factor authentication
+The package does not require additional configuration files.
 
 
-## Registering Routes
+## Route Options
 
-Authentication routes are registered in `routes/web.php`:
+Authentication features are enabled using options passed to `Route::auth()`:
 
 ```php
-Route::auth();
+Route::auth([
+    'register' => false,
+    'verify' => true,
+]);
 ```
 
-The routes are only available when `App\Http\Controllers\AuthController` exists.
+Available options:
 
-For the full route list see:
+| Option | Default | Description |
+|---|---|---|
+| `login` | `true` | Login form and submit routes |
+| `logout` | `true` | Logout routes |
+| `register` | `true` | Registration routes |
+| `reset` | `true` | Password reset routes |
+| `verify` | `false` | Email verification routes |
+| `totp` | `false` | TOTP two-factor routes |
 
-[Routes documentation](routes.md)
+Optional features are disabled by default to avoid route collisions.
 
 
-## The AuthController
+## Middleware
 
-The installer publishes a minimal controller:
+The package registers two middleware aliases:
+
+| Alias | Middleware | Description |
+|---|---|---|
+| `verified` | `EnsureEmailIsVerified` | Requires a verified e-mail address |
+| `verified.totp` | `EnsureTotpVerified` | Requires a passed TOTP check |
+
+When the `verify` or `totp` option is enabled, the corresponding middleware is automatically pushed to the `web` middleware group.
+
+
+## Email Verification
+
+Enable email verification routes:
+
+```php
+Route::auth(['verify' => true]);
+```
+
+Add the plugin trait to your `AuthController`:
+
+```php
+use HandlesEmailVerification;
+```
+
+For more information see:
+
+[Email Verification documentation](email-verification.md)
+
+
+## Two-Factor Authentication
+
+Enable TOTP routes:
+
+```php
+Route::auth(['totp' => true]);
+```
+
+Add the plugin trait to your `AuthController`:
+
+```php
+use HandlesTotpVerification;
+```
+
+For more information see:
+
+[Two-Factor Authentication documentation](totp.md)
+
+
+## Complete Example
+
+Example route registration:
+
+```php
+Route::auth([
+    'register' => false,
+    'verify' => true,
+    'totp' => true,
+]);
+```
+
+Example controller:
 
 ```php
 namespace App\Http\Controllers;
 
-use SteelAnts\LaravelAuth\Traits\Authentication;
-
-class AuthController extends Controller
-{
-    use Authentication;
-}
-```
-
-The `Authentication` trait provides all core authentication actions.
-
-Optional features are added using plugin traits:
-
-```php
 use SteelAnts\LaravelAuth\Traits\Authentication;
 use SteelAnts\LaravelAuth\Traits\HandlesEmailVerification;
 use SteelAnts\LaravelAuth\Traits\HandlesTotpVerification;
@@ -53,99 +104,17 @@ use SteelAnts\LaravelAuth\Traits\HandlesTotpVerification;
 class AuthController extends Controller
 {
     use Authentication;
-    use HandlesEmailVerification; // email verification flows
-    use HandlesTotpVerification;  // TOTP MFA flows
+    use HandlesEmailVerification;
+    use HandlesTotpVerification;
 }
 ```
-
-
-## Login
-
-The login form uses the following fields:
-
-| Field | Description |
-|---|---|
-| `email` | User e-mail address |
-| `password` | User password |
-| `remember` | Optional remember me checkbox |
-
-Validation rules:
-
-```php
-'email' => 'required|email',
-'password' => 'required',
-```
-
-After a successful login the user is redirected to the intended URL or the default redirect path.
-
-
-## Registration
-
-The registration form uses the following fields:
-
-| Field | Description |
-|---|---|
-| `name` | User name |
-| `email` | User e-mail address |
-| `password` | User password |
-| `password_confirmation` | Password confirmation |
-
-Validation rules:
-
-```php
-'name' => 'required|max:255',
-'email' => 'required|email|unique:users',
-'password' => 'required|confirmed|min:8',
-```
-
-
-## Password Reset
-
-The password reset flow consists of:
-
-1. Requesting a reset link by e-mail.
-2. Opening the reset form using the token from the e-mail.
-3. Submitting the new password.
-
-Token routes are throttled to 6 requests per minute.
-
-
-## Views
-
-The controller renders the published views:
-
-- `auth.login`
-- `auth.registration`
-- `auth.reset`
-- `auth.verify`
-- `auth.totp`
-
-You can modify the published views freely.
-
-
-## Redirect After Login
-
-By default users are redirected to the `home` route.
-
-You can customize the redirect path:
-
-```php
-public function redirectTo(): string
-{
-    return route('dashboard');
-}
-```
-
-For more customization options see:
-
-[Customization documentation](customization.md)
 
 
 ## Next Steps
 
 Continue with:
 
-- [Configuration](configuration.md)
+- [Usage](usage.md)
 - [Routes](routes.md)
 - [Email Verification](email-verification.md)
 - [Two-Factor Authentication](totp.md)
